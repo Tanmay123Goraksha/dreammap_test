@@ -1,6 +1,9 @@
+# GoalAura_AI/core/models.py (Snippet)
+
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+# Final Output Schema
 class DreamRoadmap(BaseModel):
     """Enhanced roadmap with realistic, brutally honest guidance."""
     dreamType: str = Field(description="Category of the dream (e.g., bike, phone, home renovation).")

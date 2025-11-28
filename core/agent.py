@@ -8,7 +8,7 @@ from google import genai
 from google.genai import types
 
 from core.models import DreamRoadmap
-from tools.financial_tools import get_real_world_cost, parse_price_inr
+from tools.financial_tools import get_real_world_cost, parse_price_inr,calculate_opportunity_cost
 
 load_dotenv()
 
@@ -197,6 +197,7 @@ Return a JSON object with:
 """
 
     try:
+        # **CRITICAL FIX:** Use positional argument for types.Part.from_text
         response = _safe_generate_content(
             model=model_name,
             contents=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
@@ -289,3 +290,56 @@ Return a JSON object with:
             proTips=pro_tips
         )
 
+
+
+
+def orchestrate_opportunity_cost(purchase_item: str,purchase_cost: float, user_hourly_wage: float) -> str:
+    """
+    Runs the Opportunity Cost Visualizer agent: calculates costs and generates the message.
+    """
+    print("\n--- Agent Step: Calculating Opportunity Cost ---")
+    
+    # 1. Call the Tool Directly (Internal Calculation)
+    tool_output_json = calculate_opportunity_cost(purchase_cost, user_hourly_wage)
+    tool_output = json.loads(tool_output_json)
+    
+    if "error" in tool_output:
+        return f"Error: {tool_output['error']}"
+
+    # 2. Format the Output using Gemini Flash for emotionally intelligent phrasing
+    
+    system_instruction = (
+    "You are GoalAura's proactive Behavioral Financial Advisor. Your task is to analyze a user's impulse purchase "
+    "using the provided opportunity cost data and deliver a structured, non-judgmental intervention message. "
+    "Your response must include four sections clearly marked with headings."
+
+    )
+    
+    # Ensure correct formatting for the prompt
+    prompt = (
+        f"USER PURCHASE ANALYSIS: "
+        f"Item: {purchase_item} (Cost: ₹{purchase_cost:,.0f}). "
+        f"Time Cost: {tool_output['time_cost_hours']} hours of work. "
+        f"Investment Future Value: ₹{tool_output['future_value_inr']:,.0f} in {tool_output['investment_years']} years. "
+        
+        "\n\n**TASK: Generate a persuasive and structured response with the following four sections:**"
+        "\n\n## 1. Quick Assessment (Good or Bad Purchase?)"
+        "**Analyze:** Based on standard financial principles (is this a depreciating consumption asset vs. appreciating or necessary asset?). State whether it's financially 'Good' or 'Bad' and explain why briefly."
+        
+        "\n\n## 2. The Cost of Time and Future"
+        "Use the calculated values to deliver the time cost and future value message precisely, formatted as requested by the user: 'This [Cost] equals [Time] OR could become [Future Value] in 5 years.'"
+        
+        "\n\n## 3. Better Alternatives"
+        "Suggest 2-3 specific financial or experiential alternatives that provide a similar emotional benefit (e.g., 'If it's for joy, put 10% toward a weekend trip' or 'If it's for status, invest in a quality course')."
+        
+        "\n\n## 4. Delayed Gratification Challenge"
+        "Conclude with a specific, actionable challenge (e.g., 'Wait 72 hours and move 50% of the cost into your GoalAura savings account for now')."
+    )
+    
+    response = client.models.generate_content(
+        model="gemini-2.5-pro", # Faster model for quick response
+        contents=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
+        config=types.GenerateContentConfig(system_instruction=system_instruction)
+    )
+    
+    return response.text
