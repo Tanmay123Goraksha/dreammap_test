@@ -1,11 +1,13 @@
+# GoalAura_AI/core/models.py (Snippet)
+
 from pydantic import BaseModel, Field
 from typing import List
 
+# Final Output Schema
 class DreamRoadmap(BaseModel):
-    """Lightweight, dynamic roadmap response."""
-    dreamType: str = Field(description="Category of the dream (e.g., bike, phone, home renovation).")
-    estimatedCost: float = Field(description="Realistic cost estimate in INR for India.")
-    months: int = Field(description="Timeline in months (user-provided or calculated).")
-    monthlySaving: float = Field(description="Exact monthly savings = estimatedCost / months.")
-    savingPercentage: float = Field(description="Percentage of monthly income needed for savings.")
-    milestones: List[str] = Field(description="5-7 custom milestones based on the dream.")
+    """The final structured roadmap."""
+    dream_type: str = Field(description="The category of the dream (e.g., 'Business Startup', 'Major Purchase').")
+    total_cost_inr: float = Field(description="The total estimated startup capital required, calculated by the AI.")
+    milestones: List[str] = Field(description="5-7 concise, actionable steps for the user.")
+    monthly_saving: float = Field(description="Required monthly savings to hit the total cost in the target duration.")
+    saving_percentage: float = Field(description="Monthly savings required as a percentage of user's income.")

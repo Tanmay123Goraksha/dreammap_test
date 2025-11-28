@@ -21,37 +21,26 @@ def _extract_first_numeric_rupee(text: str) -> float:
     return -1.0
 
 
+# GoalAura_AI/tools/financial_tools.py (Ensure structured output)
+
 def get_real_world_cost(item_query: str, location: str = "Mumbai, India") -> str:
     """
-    UNIVERSAL mock cost tool.
-
-    - Handles ANY item the user wants
-    - Known items return realistic structured costs
-    - Unknown items fall back to a generic estimate
+    Finds detailed cost components and returns a JSON string for the AI to process.
+    The AI will calculate the total cost from this list.
     """
-
-    q = item_query.lower()
-
-    # --- Known objects (still allowed but optional) ---
-    KNOWN_ITEMS = {
-        "commercial oven": "₹100000",
-        "gaming pc": "₹120000",
-        "horse": "₹300000",
-        "dog": "₹40000",
-        "bicycle": "₹100000",
-        "motorcycle": "₹150000",
-        "car": "₹800000",
-    }
-
-    for key, price in KNOWN_ITEMS.items():
-        if key in q:
-            return f"Estimated cost for {key} in {location} is approximately {price}."
-
-    # --- Universal fallback (works for anything the user types) ---
-    return (
-        f"No exact market data found for '{item_query}'. "
-        f"Using a generic project/startup estimate of ₹100,000."
-    )
+    # *** HACKATHON SIMULATION LOGIC: RETURNING STRUCTURED DATA ***
+    if "bakery" in item_query.lower():
+        cost_data = [
+            {"item": "Commercial Oven (1 deck)", "type": "Equipment", "cost_inr": 120000},
+            {"item": "Monthly Rent Deposit (3 months)", "type": "Initial Fixed", "cost_inr": 150000},
+            {"item": "Initial Ingredient Stock", "type": "Startup", "cost_inr": 30000},
+            {"item": "Monthly Utility Estimate", "type": "Recurring Monthly", "cost_inr": 10000}
+        ]
+    # ... (other cost data examples) ...
+    else:
+        cost_data = [{"item": item_query, "type": "One-time", "cost_inr": 85000}]
+    
+    return json.dumps(cost_data)
 
 
 def parse_price_inr(text: str) -> float:

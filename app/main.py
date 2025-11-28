@@ -5,9 +5,18 @@ import uvicorn
 import os
 
 # Import the core logic and models
-from core.agent import generate_dynamic_roadmap, orchestrate_opportunity_cost
+# GoalAura_AI/app/main.py (CORRECTED IMPORT)
+from core.agent import orchestrate_dream_roadmap, orchestrate_opportunity_cost
 from core.models import DreamRoadmap
+from google import genai
+from google.genai import types
+import json
 
+
+if os.environ.get("GEMINI_API_KEY"):
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+else:
+    client = None
 
 
 # --- 1. Define the Input Schema for the API ---
@@ -33,7 +42,7 @@ async def create_dream_map(request: DreamRequest):
     """
     try:
         # Call the dynamic AI logic
-        roadmap = generate_dynamic_roadmap(
+        roadmap = orchestrate_dream_roadmap(
             dream_text=request.dream_text,
             user_income=request.user_monthly_income,
             target_months=request.target_months
@@ -98,6 +107,121 @@ async def get_opportunity_cost(request: PurchaseRequest):
 
 
 
+class QuantumDecisionRequest(BaseModel):
+    """Schema for Quantum Decision Tree evaluation."""
+    situation: str = Field(
+        ...,
+        description="A natural language description of the decision or dilemma.",
+        example="Should I buy a gaming laptop or save the money for relocation?"
+    )
+    user_monthly_income: float = Field(
+        ...,
+        gt=0,
+        description="User's monthly income in INR."
+    )
+    user_savings_inr: float = Field(
+        ...,
+        ge=0,
+        description="User's current savings."
+    )
+    risk_profile: str = Field(
+        ..., 
+        description="User's risk preference: low, medium, or high.",
+        example="medium"
+    )
+
+
+@app.post("/api/quantum-decision-tree")
+async def quantum_decision_tree(request: QuantumDecisionRequest):
+    """
+    Evaluates a user's dilemma using a Quantum Decision Tree (QDT) model.
+    Uses a single Gemini call and behaves like a professional financial advisor.
+    """
+    try:
+        if not os.environ.get("GEMINI_API_KEY"):
+            raise HTTPException(
+                status_code=500,
+                detail="Server error: GEMINI_API_KEY not configured."
+            )
+
+        # --- Construct the QDT Prompt ---
+        system_instruction = (
+            "You are GoalAura's Quantum Decision Tree Engine: a professional "
+            "financial advisor trained in behavioral psychology, risk modeling, "
+            "loss-aversion theory, decision science, and long-term planning. "
+            "Your job is to evaluate dilemmas and output a structured recommendation."
+        )
+
+        prompt = f"""
+User Situation: {request.situation}
+Monthly Income: ₹{request.user_monthly_income:,.0f}
+Current Savings: ₹{request.user_savings_inr:,.0f}
+Risk Profile: {request.risk_profile}
+
+TASK:
+Evaluate the scenario using a Quantum Decision Tree (QDT), where each branch
+represents a probabilistic mental model:
+
+1. Immediate Gratification Path
+2. Delayed Gratification Path
+3. Risk-Averse Conservative Path
+4. High-Utility Strategic Path
+
+Return the output strictly in this JSON structure:
+
+{{
+  "decision_rating": "Smart | Neutral | Risky",
+  "recommended_choice": "string",
+  "confidence_score": 0-100,
+  "reasoning": {{
+    "financial_factors": "string",
+    "psychological_factors": "string",
+    "opportunity_cost_view": "string",
+    "risk_analysis": "string"
+  }},
+  "quantum_paths": [
+    {{
+      "path_name": "Immediate Gratification",
+      "outcome": "string",
+      "probability": "percentage"
+    }},
+    {{
+      "path_name": "Delayed Gratification",
+      "outcome": "string",
+      "probability": "percentage"
+    }},
+    {{
+      "path_name": "Conservative Path",
+      "outcome": "string",
+      "probability": "percentage"
+    }},
+    {{
+      "path_name": "Strategic Path",
+      "outcome": "string",
+      "probability": "percentage"
+    }}
+  ],
+  "final_advice": "string"
+}}
+        """
+
+        # --- GEMINI CALL (Only One Call) ---
+        response = client.models.generate_content(
+            model="gemini-2.5-pro",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                response_mime_type="application/json"
+            )
+        )
+
+
+        result = json.loads(response.text)
+        return result
+
+    except Exception as e:
+        print(f"QDT error: {e}")
+        raise HTTPException(status_code=500, detail=f"QDT processing error: {str(e)}")
 
 
 

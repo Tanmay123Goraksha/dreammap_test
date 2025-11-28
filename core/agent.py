@@ -48,7 +48,7 @@ def _safe_generate_content(*, model: str, contents, config):
 # at top of core/agent.py add:
 from tools.cost_engine import classify_dream, estimate_total_cost_with_ai, build_breakdown_from_template
 
-def generate_dynamic_roadmap(dream_text: str, user_income: float, target_months: int | None = None) -> DreamRoadmap:
+def orchestrate_dream_roadmap(dream_text: str, user_income: float, target_months: int | None = None) -> DreamRoadmap:
     """
     Dynamic AI processing: Extract dream category, estimate cost using real-world tool, calculate timeline,
     generate milestones. Lightweight, token-efficient, no templates.
@@ -58,11 +58,10 @@ def generate_dynamic_roadmap(dream_text: str, user_income: float, target_months:
     if not os.environ.get("GEMINI_API_KEY"):
         # Fail-safe: Return fallback if API unavailable
         return DreamRoadmap(
-            dreamType="unknown",
-            estimatedCost=0,
-            months=0,
-            monthlySaving=0,
-            savingPercentage=0.0,
+            dream_type="unknown",
+            total_cost_inr=0,
+            monthly_saving=0,
+            saving_percentage=0.0,
             milestones=["AI unavailable — fallback activated"]
         )
 
@@ -84,16 +83,18 @@ def generate_dynamic_roadmap(dream_text: str, user_income: float, target_months:
 
     # --- STEP 2: Generate milestones with AI ---
     prompt = (
-        f"Dream: '{dream_text}'. Category: {dream_type}. "
-        f"Estimated cost: ₹{estimated_cost}. Timeline: {months} months. "
-        "Generate 5-7 concise milestones for achieving this dream with cost if required. "
-        "Return only a JSON array of strings, e.g., [\"milestone1\", \"milestone2\", ...]."
-    )
+            f"Dream: '{dream_text}'. Category: {dream_type}. "
+            f"Estimated total cost: ₹{estimated_cost:,.0f}. Timeline: {months} months. "
+            f"Monthly saving needed: ₹{monthly_saving:,.0f} ({saving_percentage:.1f}% of income). "
+            "Generate 5-7 concise, actionable milestones for achieving this dream, detailing the cost of the first 2-3 major steps. "
+            "Return only a JSON array of strings, e.g., [\"milestone1\", \"milestone2\", ...]."
+        )
 
     try:
+        # **CRITICAL FIX:** Use positional argument for types.Part.from_text
         response = _safe_generate_content(
             model=model_name,
-            contents=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
+            contents=[types.Content(role="user", parts=[types.Part.from_text(prompt)])], # REMOVED: text= keyword
             config=types.GenerateContentConfig(response_mime_type="application/json"),
         )
         milestones = json.loads(response.text)
@@ -104,11 +105,10 @@ def generate_dynamic_roadmap(dream_text: str, user_income: float, target_months:
         milestones = [f"Step {i+1}" for i in range(7)]
 
     return DreamRoadmap(
-        dreamType=dream_type,
-        estimatedCost=estimated_cost,
-        months=months,
-        monthlySaving=monthly_saving,
-        savingPercentage=saving_percentage,
+        dream_type=dream_type,
+        total_cost_inr=estimated_cost,
+        monthly_saving=monthly_saving,
+        saving_percentage=saving_percentage,
         milestones=milestones[:7]
     )
 
