@@ -5,50 +5,45 @@ import uvicorn
 import os
 
 # Import the core logic and models
-from core.agent import orchestrate_dream_mapping
-from core.models import FinancialRoadmap
+from core.agent import generate_dynamic_roadmap
+from core.models import DreamRoadmap
 
 # --- 1. Define the Input Schema for the API ---
 class DreamRequest(BaseModel):
     """Schema for the data sent from the mobile app to the API."""
-    dream_text: str = Field(..., description="The user's natural language goal/dream.")
-    user_monthly_income: float = Field(..., gt=0, description="The user's monthly income in INR.")
+    dream_text: str = Field(..., description="The user's natural language goal/dream.", example="I want to buy a bike and start within 12 months.")
+    user_monthly_income: float = Field(..., gt=0, description="The user's monthly income in INR.", example=50000)
+    target_months: int | None = Field(None, gt=0, description="Optional: number of months the user wants to achieve the dream.", example=12)
 
 # --- 2. Initialize FastAPI App ---
 app = FastAPI(
     title="GoalAura AI Backend",
-    description="Agentic AI API for Dream Mapping and Reverse Budget Engineering.",
+    description="Dynamic AI API for personalized dream roadmaps.",
     version="1.0.0"
 )
 
 # --- 3. Define the API Endpoint ---
-@app.post("/api/dream-map", response_model=FinancialRoadmap)
+@app.post("/api/dream-map", response_model=DreamRoadmap)
 async def create_dream_map(request: DreamRequest):
     """
-    Receives the user's dream and income, runs the Agentic AI, 
-    and returns the structured financial roadmap.
+    Receives the user's dream, runs dynamic AI processing,
+    and returns the lightweight roadmap.
     """
     try:
-        # Check for API Key before running the agent
-        if not os.environ.get("GEMINI_API_KEY"):
-            raise HTTPException(
-                status_code=500, 
-                detail="Server error: GEMINI_API_KEY not configured."
-            )
-
-        # Call the core Agentic AI logic
-        roadmap = orchestrate_dream_mapping(
-            dream_text=request.dream_text, 
-            user_income=request.user_monthly_income
+        # Call the dynamic AI logic
+        roadmap = generate_dynamic_roadmap(
+            dream_text=request.dream_text,
+            user_income=request.user_monthly_income,
+            target_months=request.target_months
         )
-        
+
         # FastAPI automatically converts the Pydantic object to JSON
         return roadmap
 
     except Exception as e:
         print(f"Error processing dream map request: {e}")
         raise HTTPException(
-            status_code=500, 
+            status_code=500,
             detail=f"An error occurred while generating the roadmap: {str(e)}"
         )
 

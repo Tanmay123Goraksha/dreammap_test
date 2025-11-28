@@ -1,0 +1,245 @@
+{
+  "purchase_vehicle": {
+    "label": "Buy a vehicle",
+    "example_queries": ["buy a bike", "buy a motorcycle", "purchase a bike", "buy a scooter"],
+    "base_estimate_inr": 80000,
+    "items": [
+      {"name": "Vehicle (base price)", "factor": 0.80},
+      {"name": "Registration & RTO fees", "factor": 0.03},
+      {"name": "Insurance (1 year)", "factor": 0.04},
+      {"name": "Helmet & accessories", "factor": 0.02},
+      {"name": "Maintenance buffer", "factor": 0.05},
+      {"name": "Extras (gear/customization)", "factor": 0.06}
+    ]
+  },
+
+  "purchase_phone": {
+    "label": "Buy a phone",
+    "example_queries": ["buy a phone", "new smartphone", "purchase iphone"],
+    "base_estimate_inr": 30000,
+    "items": [
+      {"name": "Phone", "factor": 0.85},
+      {"name": "Case & screen protector", "factor": 0.03},
+      {"name": "Extended warranty/insurance", "factor": 0.05},
+      {"name": "Accessories (charger/headset)", "factor": 0.03},
+      {"name": "Misc buffer", "factor": 0.04}
+    ]
+  },
+
+  "purchase_laptop": {
+    "label": "Buy a laptop",
+    "example_queries": ["buy a laptop", "macbook", "gaming laptop"],
+    "base_estimate_inr": 60000,
+    "items": [
+      {"name": "Laptop", "factor": 0.85},
+      {"name": "Peripherals (mouse, bag)", "factor": 0.03},
+      {"name": "Extended warranty", "factor": 0.04},
+      {"name": "Software/licenses", "factor": 0.03},
+      {"name": "Misc buffer", "factor": 0.05}
+    ]
+  },
+
+  "world_tour": {
+    "label": "World tour / long international travel",
+    "example_queries": ["world tour", "backpack europe", "europe trip"],
+    "base_estimate_inr": 300000,
+    "items": [
+      {"name": "Flights (round-trip & internal)", "factor": 0.45},
+      {"name": "Accommodation", "factor": 0.25},
+      {"name": "Local travel & visas", "factor": 0.10},
+      {"name": "Food & activities", "factor": 0.10},
+      {"name": "Travel insurance & buffer", "factor": 0.10}
+    ]
+  },
+
+  "start_cafe": {
+    "label": "Start a cafe / small food business",
+    "example_queries": ["start a cafe", "open a small cafe", "start a coffee shop"],
+    "base_estimate_inr": 1500000,
+    "items": [
+      {"name": "Equipment (coffee machine, grinders)", "factor": 0.25},
+      {"name": "Interior & furnishing", "factor": 0.20},
+      {"name": "Rent (deposit & initial months)", "factor": 0.20},
+      {"name": "Licenses & registrations", "factor": 0.03},
+      {"name": "Initial inventory & supplies", "factor": 0.07},
+      {"name": "Staff (first 2-3 months)", "factor": 0.10},
+      {"name": "Marketing & website", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.10}
+    ]
+  },
+
+  "open_gym": {
+    "label": "Open a gym",
+    "example_queries": ["open a gym", "start a gym", "fitness center"],
+    "base_estimate_inr": 2000000,
+    "items": [
+      {"name": "Equipment", "factor": 0.40},
+      {"name": "Space & interiors", "factor": 0.20},
+      {"name": "Licenses & insurance", "factor": 0.05},
+      {"name": "Staff (first months)", "factor": 0.10},
+      {"name": "Marketing", "factor": 0.05},
+      {"name": "Utilities & operating buffer", "factor": 0.10},
+      {"name": "Misc", "factor": 0.10}
+    ]
+  },
+
+  "purchase_car": {
+    "label": "Buy a car",
+    "example_queries": ["buy a car", "purchase a car", "new car"],
+    "base_estimate_inr": 800000,
+    "items": [
+      {"name": "Car (base price)", "factor": 0.80},
+      {"name": "Registration & RTO", "factor": 0.03},
+      {"name": "Insurance", "factor": 0.04},
+      {"name": "Accessories & fitments", "factor": 0.03},
+      {"name": "Maintenance buffer", "factor": 0.05},
+      {"name": "EMI downpayment (reserve)", "factor": 0.05}
+    ]
+  },
+
+  "masters_degree": {
+    "label": "Master's degree (domestic/international)",
+    "example_queries": ["do a master's degree", "masters abroad", "MBA"],
+    "base_estimate_inr": 1000000,
+    "items": [
+      {"name": "Tuition fees", "factor": 0.70},
+      {"name": "Living expenses", "factor": 0.15},
+      {"name": "Travel/visa", "factor": 0.05},
+      {"name": "Books & supplies", "factor": 0.03},
+      {"name": "Application/entrance costs", "factor": 0.02},
+      {"name": "Misc buffer", "factor": 0.05}
+    ]
+  },
+
+  "home_renovation": {
+    "label": "Renovate home",
+    "example_queries": ["renovate home", "home renovation", "flat repair"],
+    "base_estimate_inr": 500000,
+    "items": [
+      {"name": "Civil works & structure", "factor": 0.40},
+      {"name": "Electrical & plumbing", "factor": 0.15},
+      {"name": "Tiles & flooring", "factor": 0.10},
+      {"name": "Carpentry & wardrobes", "factor": 0.15},
+      {"name": "Painting & finishing", "factor": 0.10},
+      {"name": "Misc & contingency", "factor": 0.10}
+    ]
+  },
+
+  "marriage_planning": {
+    "label": "Marriage planning",
+    "example_queries": ["marriage planning", "wedding budget"],
+    "base_estimate_inr": 1000000,
+    "items": [
+      {"name": "Venue & catering", "factor": 0.45},
+      {"name": "Clothing & jewelry", "factor": 0.15},
+      {"name": "Photography & videography", "factor": 0.08},
+      {"name": "Decor & entertainment", "factor": 0.12},
+      {"name": "Invitations & stationery", "factor": 0.03},
+      {"name": "Misc & contingency", "factor": 0.17}
+    ]
+  },
+
+  "buy_dog": {
+    "label": "Buy a dog (pet)",
+    "example_queries": ["buy a dog", "get a dog", "puppy"],
+    "base_estimate_inr": 40000,
+    "items": [
+      {"name": "Purchase/adoption cost", "factor": 0.40},
+      {"name": "Initial vaccination & vet", "factor": 0.12},
+      {"name": "Accessories (bed, leash, bowl)", "factor": 0.10},
+      {"name": "Food (initial stock)", "factor": 0.15},
+      {"name": "Grooming & training", "factor": 0.08},
+      {"name": "Misc buffer", "factor": 0.15}
+    ]
+  },
+
+  "buy_horse": {
+    "label": "Buy a horse",
+    "example_queries": ["buy a horse", "purchase a horse"],
+    "base_estimate_inr": 300000,
+    "items": [
+      {"name": "Horse purchase", "factor": 0.70},
+      {"name": "Stabling & care setup", "factor": 0.10},
+      {"name": "Initial vet & vaccinations", "factor": 0.05},
+      {"name": "Feed & supplies (initial)", "factor": 0.05},
+      {"name": "Transport & documentation", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.05}
+    ]
+  },
+
+  "buy_luxury_item": {
+    "label": "Buy luxury item",
+    "example_queries": ["buy a watch", "buy a guitar", "buy an instrument"],
+    "base_estimate_inr": 100000,
+    "items": [
+      {"name": "Item cost", "factor": 0.85},
+      {"name": "Accessories/maintenance", "factor": 0.05},
+      {"name": "Insurance/warranty", "factor": 0.03},
+      {"name": "Misc buffer", "factor": 0.07}
+    ]
+  },
+
+  "small_business_service": {
+    "label": "Start a small service business",
+    "example_queries": ["start a tutoring center", "start a salon", "start a plumbing business"],
+    "base_estimate_inr": 300000,
+    "items": [
+      {"name": "Equipment & tools", "factor": 0.30},
+      {"name": "Space & setup", "factor": 0.20},
+      {"name": "Licensing & registration", "factor": 0.05},
+      {"name": "Initial marketing", "factor": 0.10},
+      {"name": "Working capital (3 months)", "factor": 0.20},
+      {"name": "Misc buffer", "factor": 0.15}
+    ]
+  },
+
+  "education_course": {
+    "label": "Short-term course / certification",
+    "example_queries": ["learn data science", "join a bootcamp", "python course"],
+    "base_estimate_inr": 50000,
+    "items": [
+      {"name": "Course fee", "factor": 0.80},
+      {"name": "Books & materials", "factor": 0.05},
+      {"name": "Exam/application fees", "factor": 0.05},
+      {"name": "Living/commute", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.05}
+    ]
+  },
+
+  "furniture_purchase": {
+    "label": "Buy furniture / home goods",
+    "example_queries": ["buy a sofa", "new furniture", "dining table"],
+    "base_estimate_inr": 80000,
+    "items": [
+      {"name": "Main furniture item", "factor": 0.70},
+      {"name": "Delivery & installation", "factor": 0.10},
+      {"name": "Cushions & accessories", "factor": 0.05},
+      {"name": "Maintenance/cleaning setup", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.10}
+    ]
+  },
+
+  "home_appliance": {
+    "label": "Buy a home appliance",
+    "example_queries": ["buy refrigerator", "buy washing machine"],
+    "base_estimate_inr": 40000,
+    "items": [
+      {"name": "Appliance", "factor": 0.85},
+      {"name": "Delivery & warranty", "factor": 0.05},
+      {"name": "Installation & accessories", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.05}
+    ]
+  },
+
+  "other": {
+    "label": "Other / Generic",
+    "example_queries": [],
+    "base_estimate_inr": 100000,
+    "items": [
+      {"name": "Primary cost", "factor": 0.70},
+      {"name": "Related fees", "factor": 0.10},
+      {"name": "Accessories", "factor": 0.05},
+      {"name": "Misc buffer", "factor": 0.15}
+    ]
+  }
+}
