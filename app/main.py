@@ -12,6 +12,7 @@ from core.models import DreamRoadmap
 from google import genai
 from google.genai import types
 import json
+from typing import Optional, List, Dict, Any
 
 
 if os.environ.get("GEMINI_API_KEY"):
@@ -258,6 +259,35 @@ async def savings_advisor(request: SavingsRequest):
         print("Savings Advisor Error →", e)
         raise HTTPException(500, f"Savings planner failed: {str(e)}")
 
+
+
+# import the agent at top of main.py
+from core.lifestyle_agent import orchestrate_lifestyle_projection
+
+# Pydantic request model (add near other models)
+class LifestyleRequest(BaseModel):
+    monthly_income: float = Field(..., gt=0)
+    fixed_expenses: float = Field(..., ge=0)
+    variable_expenses: float = Field(..., ge=0)
+    emi_obligations: float = Field(0, ge=0)
+    current_savings: float = Field(0, ge=0)
+    number_of_dependents: int = Field(0, ge=0)
+    risk_profile: str = Field("medium")
+    city_tier: Optional[int] = Field(None, description="1=metro,2=city,3=tier-2 (optional)")
+    goals: Optional[List[Dict[str, Any]]] = Field(None, description="Optional list of goals: [{name, target, deadline_months}]")
+
+@app.post("/api/lifestyle-projection")
+async def lifestyle_projection_endpoint(req: LifestyleRequest):
+    try:
+        if not os.environ.get("GEMINI_API_KEY"):
+            raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured")
+
+        payload = req.dict()
+        result = orchestrate_lifestyle_projection(payload, model_name="gemini-2.5-pro")
+        return result
+    except Exception as e:
+        print(f"Lifestyle projection error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
