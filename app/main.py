@@ -7,6 +7,7 @@ import os
 # Import the core logic and models
 # GoalAura_AI/app/main.py (CORRECTED IMPORT)
 from core.agent import orchestrate_dream_roadmap, orchestrate_opportunity_cost
+from core.savings_agent import orchestrate_savings_plan
 from core.models import DreamRoadmap
 from google import genai
 from google.genai import types
@@ -222,6 +223,40 @@ Return the output strictly in this JSON structure:
     except Exception as e:
         print(f"QDT error: {e}")
         raise HTTPException(status_code=500, detail=f"QDT processing error: {str(e)}")
+
+
+
+
+# ============================================================
+# SAVINGS & INVESTMENT PLANNER ENDPOINT
+# ============================================================
+
+class SavingsRequest(BaseModel):
+    """User provides full financial profile for custom savings planning."""
+    monthly_income: float = Field(..., gt=0, example=50000)
+    fixed_expenses: float = Field(..., ge=0, example=20000)
+    variable_expenses: float = Field(..., ge=0, example=10000)
+    number_of_dependents: int = Field(..., ge=0, example=2)
+    savings_goal: str = Field(..., example="Build a ₹5 lakh emergency fund and start investing")
+    risk_profile: str = Field(..., example="medium")  # low | medium | high
+    current_savings: float = Field(..., ge=0, example=30000)
+    emi_obligations: float = Field(0, ge=0, example=5000)
+    lifestyle_preference: str = Field(
+        "balanced",
+        description="minimal | balanced | premium",
+        example="balanced"
+    )
+
+
+
+@app.post("/api/savings-advisor")
+async def savings_advisor(request: SavingsRequest):
+    try:
+        result = orchestrate_savings_plan(request.dict())
+        return result
+    except Exception as e:
+        print("Savings Advisor Error →", e)
+        raise HTTPException(500, f"Savings planner failed: {str(e)}")
 
 
 
